@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg-primary: #ffffff;
       --bg-secondary: #f5f5f4;
@@ -27,35 +26,11 @@
       --radius-md: 8px;
       --radius-lg: 12px;
     }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .app {
-      display: grid;
-      grid-template-columns: 300px 1fr 300px;
-      grid-template-rows: 56px 1fr;
-      height: 100vh;
-      background: var(--bg-primary);
-    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg-tertiary); color: var(--text-primary); height: 100vh; overflow: hidden; }
+    .app { display: grid; grid-template-columns: 300px 1fr 300px; grid-template-rows: 56px 1fr; height: 100vh; background: var(--bg-primary); }
 
     /* TOPBAR */
-    .topbar {
-      grid-column: 1 / -1;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-primary);
-      gap: 14px;
-    }
-    .topbar-brand { display: flex; flex-direction: column; }
+    .topbar { grid-column: 1 / -1; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg-primary); gap: 14px; }
     .topbar-logo { font-size: 15px; font-weight: 500; letter-spacing: -0.3px; }
     .topbar-logo span { color: var(--blue); }
     .topbar-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
@@ -65,6 +40,10 @@
     .topbar-nav a:hover { background: var(--bg-secondary); }
     .topbar-nav a.active { color: var(--blue); font-weight: 500; }
     .avatar-sm { width: 32px; height: 32px; border-radius: 50%; background: #B5D4F4; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--blue-dark); flex-shrink: 0; }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: #1D9E75; position: relative; flex-shrink: 0; }
+    .pulse::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid #1D9E75; opacity: 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2); opacity: 0; } }
+    .sync-label { font-size: 11px; color: var(--text-tertiary); }
 
     /* SIDEBAR */
     .sidebar { border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; background: var(--bg-primary); }
@@ -129,7 +108,7 @@
     .metric-label { font-size: 11px; color: var(--text-tertiary); }
     .metric-value { font-size: 20px; font-weight: 500; margin-top: 3px; }
     .historial-scroll { font-size: 12px; color: var(--text-secondary); line-height: 1.6; max-height: 130px; overflow-y: auto; }
-    .historial-scroll .h-rol { color: var(--text-tertiary); font-family: 'DM Mono', monospace; font-size: 11px; }
+    .h-rol { color: var(--text-tertiary); font-family: 'DM Mono', monospace; font-size: 11px; }
     .btn-return { width: 100%; padding: 11px; border-radius: var(--radius-md); background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: background 0.15s; margin-top: auto; }
     .btn-return:hover { background: var(--green-border); }
     .btn-return:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -142,7 +121,6 @@
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--blue); color: #fff; font-size: 13px; font-family: 'DM Sans', sans-serif; padding: 10px 18px; border-radius: var(--radius-md); opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
     .toast.show { opacity: 1; }
 
-    /* SCROLLBAR */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 4px; }
@@ -154,17 +132,19 @@
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-brand">
+    <div>
       <div class="topbar-logo">GIWA <span>Handoff</span></div>
-      <div class="topbar-sub">Panel de atención humana</div>
+      <div style="font-size:11px;color:var(--text-tertiary);margin-top:1px;">Panel de atención humana</div>
     </div>
     <div class="topbar-divider"></div>
+    <div class="pulse"></div>
+    <span class="sync-label" id="sync-label">Sincronizando...</span>
     <nav class="topbar-nav">
       <a href="#">Inicio</a>
       <a href="#" class="active">Conversaciones</a>
       <a href="#">Operaciones</a>
     </nav>
-    <div class="avatar-sm" id="topbar-avatar">SE</div>
+    <div class="avatar-sm">SE</div>
   </div>
 
   <!-- SIDEBAR -->
@@ -214,40 +194,88 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ─── CONFIGURACIÓN ───────────────────────────────────────────────
+  const N8N_POLLING_URL   = 'https://giwa-ia.app.n8n.cloud/webhook/handoff-tickets';
   const N8N_RESPONDER_URL = 'https://giwa-ia.app.n8n.cloud/webhook/handoff-responder';
   const N8N_RELEASE_URL   = 'https://giwa-ia.app.n8n.cloud/webhook/handoff-release';
-  // ─────────────────────────────────────────────────────────────────
+  const POLL_INTERVAL_MS  = 10000;
 
   const initials = n => n.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-  const fmt = ts => new Date(ts).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-  const elapsed = ts => { const m = Math.round((Date.now() - new Date(ts)) / 60000); return m < 60 ? m + ' min' : Math.round(m/60) + 'h'; };
+  const fmt      = ts => new Date(ts).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+  const elapsed  = ts => { const m = Math.round((Date.now() - new Date(ts)) / 60000); return m < 60 ? m + ' min' : Math.round(m / 60) + 'h'; };
 
-  let tickets = [];
-  let activeId = null;
+  let tickets  = [];
   let filtered = [];
+  let activeId = null;
+  let searchQ  = '';
 
-  function filterTickets(q) {
-    const ql = q.toLowerCase();
-    filtered = tickets.filter(t =>
-      t.nombre_usuario.toLowerCase().includes(ql) ||
-      t.ultimo_mensaje.toLowerCase().includes(ql)
-    );
+  // ── POLLING ────────────────────────────────────────────────────────
+  async function pollTickets() {
+    try {
+      const res  = await fetch(N8N_POLLING_URL);
+      const data = await res.json();
+      const incoming = Array.isArray(data.tickets) ? data.tickets : [];
+
+      // detectar tickets nuevos para notificar
+      incoming.forEach(t => {
+        const exists = tickets.find(x => x.chat_id === t.chat_id);
+        if (!exists && t.estado === 'en_atencion') {
+          showToast('Nuevo ticket: ' + t.nombre_usuario);
+        }
+      });
+
+      // actualizar lista conservando mensajes del agente enviados localmente
+      tickets = incoming.map(incoming => {
+        const local = tickets.find(x => x.chat_id === incoming.chat_id);
+        if (local) {
+          // agregar mensajes de agente locales que no están en el servidor aún
+          const serverIds = new Set(incoming.historial.map(m => m.timestamp));
+          const localAgent = local.historial.filter(m => m.rol === 'agente' && !serverIds.has(m.timestamp));
+          incoming.historial = [...incoming.historial, ...localAgent]
+            .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        }
+        return incoming;
+      });
+
+      applyFilter();
+
+      // refrescar vista activa si está abierta
+      if (activeId) {
+        const t = tickets.find(t => t.chat_id === activeId);
+        if (t) {
+          renderMessages(t);
+          renderRightPanel(t);
+        }
+      }
+
+      document.getElementById('sync-label').textContent = 'Actualizado ' + fmt(new Date());
+    } catch (e) {
+      document.getElementById('sync-label').textContent = 'Sin conexión';
+    }
+  }
+
+  function applyFilter() {
+    const q = searchQ.toLowerCase();
+    filtered = q
+      ? tickets.filter(t => t.nombre_usuario.toLowerCase().includes(q) || t.ultimo_mensaje.toLowerCase().includes(q))
+      : [...tickets];
     renderList();
   }
 
+  function filterTickets(q) { searchQ = q; applyFilter(); }
+
+  // ── RENDER LIST ────────────────────────────────────────────────────
   function renderList() {
     const list = document.getElementById('ticket-list');
     list.innerHTML = '';
     if (filtered.length === 0) {
-      list.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:#999;">Sin tickets</div>';
+      list.innerHTML = '<div style="padding:24px;text-align:center;font-size:12px;color:#999;">Sin tickets activos</div>';
       return;
     }
     filtered.forEach(t => {
-      const el = document.createElement('div');
+      const el  = document.createElement('div');
       el.className = 'ticket-item' + (t.chat_id === activeId ? ' active' : '');
-      el.onclick = () => selectTicket(t.chat_id);
-      const dot = t.estado === 'en_atencion' ? 'active' : 'closed';
+      el.onclick   = () => selectTicket(t.chat_id);
+      const dot    = t.estado === 'en_atencion' ? 'active' : 'closed';
       el.innerHTML = `
         <div class="avatar-sm">${initials(t.nombre_usuario)}</div>
         <div class="status-dot ${dot}"></div>
@@ -262,38 +290,40 @@
     });
   }
 
+  // ── SELECT TICKET ──────────────────────────────────────────────────
   function selectTicket(id) {
     activeId = id;
     renderList();
     const t = tickets.find(t => t.chat_id === id);
     if (!t) return;
-    document.getElementById('empty-state').style.display = 'none';
-    const ca = document.getElementById('chat-active');
-    ca.style.display = 'flex';
-    document.getElementById('chat-avatar').textContent = initials(t.nombre_usuario);
-    document.getElementById('chat-name').textContent = t.nombre_usuario;
-    document.getElementById('chat-id-label').textContent = 'chat_id: ' + t.chat_id;
+    document.getElementById('empty-state').style.display  = 'none';
+    document.getElementById('chat-active').style.display  = 'flex';
+    document.getElementById('chat-avatar').textContent    = initials(t.nombre_usuario);
+    document.getElementById('chat-name').textContent      = t.nombre_usuario;
+    document.getElementById('chat-id-label').textContent  = 'chat_id: ' + t.chat_id;
     renderMessages(t);
     renderRightPanel(t);
   }
 
+  // ── RENDER MESSAGES ────────────────────────────────────────────────
   function renderMessages(t) {
     const area = document.getElementById('chat-messages');
+    const scrollBottom = area.scrollHeight - area.scrollTop === area.clientHeight;
     area.innerHTML = '';
     const sys = document.createElement('div');
-    sys.className = 'system-msg';
+    sys.className   = 'system-msg';
     sys.textContent = '— handoff iniciado · ' + fmt(t.timestamp_handoff) + ' —';
     area.appendChild(sys);
     t.historial.forEach(m => {
       const isAgent = m.rol === 'agente';
       const isBot   = m.rol === 'bot';
-      const wrap = document.createElement('div');
+      const wrap    = document.createElement('div');
       wrap.className = 'msg ' + (isAgent ? 'from-agent' : 'from-user');
-      const label = isAgent ? 'Agente' : isBot ? 'Bot' : t.nombre_usuario;
-      const ini   = isAgent ? 'AG' : isBot ? 'B' : initials(t.nombre_usuario);
-      const av    = isAgent ? 'background:#B5D4F4;color:#0C447C;'
-                  : isBot   ? 'background:#C0DD97;color:#27500A;'
-                  :           'background:#F4C0D1;color:#72243E;';
+      const label   = isAgent ? 'Agente' : isBot ? 'Bot' : t.nombre_usuario;
+      const ini     = isAgent ? 'AG' : isBot ? 'B' : initials(t.nombre_usuario);
+      const av      = isAgent ? 'background:#B5D4F4;color:#0C447C;'
+                    : isBot   ? 'background:#C0DD97;color:#27500A;'
+                    :           'background:#F4C0D1;color:#72243E;';
       wrap.innerHTML = `
         <div class="avatar-sm" style="${av}">${ini}</div>
         <div>
@@ -302,11 +332,12 @@
         </div>`;
       area.appendChild(wrap);
     });
-    area.scrollTop = area.scrollHeight;
+    if (scrollBottom) area.scrollTop = area.scrollHeight;
   }
 
+  // ── RENDER RIGHT PANEL ─────────────────────────────────────────────
   function renderRightPanel(t) {
-    const panel = document.getElementById('right-panel');
+    const panel    = document.getElementById('right-panel');
     const isActive = t.estado === 'en_atencion';
     panel.innerHTML = `
       <div class="panel-section">
@@ -337,6 +368,7 @@
       </button>`;
   }
 
+  // ── SEND MESSAGE ───────────────────────────────────────────────────
   function sendMessage() {
     const input = document.getElementById('msg-input');
     const texto = input.value.trim();
@@ -344,7 +376,8 @@
     input.value = '';
     const t = tickets.find(t => t.chat_id === activeId);
     if (!t) return;
-    t.historial.push({ rol: 'agente', mensaje: texto, timestamp: new Date().toISOString() });
+    const msg = { rol: 'agente', mensaje: texto, timestamp: new Date().toISOString() };
+    t.historial.push(msg);
     t.ultimo_mensaje = texto;
     renderMessages(t);
     renderList();
@@ -360,6 +393,7 @@
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   }
 
+  // ── RETURN TO BOT ──────────────────────────────────────────────────
   function returnToBot() {
     const t = tickets.find(t => t.chat_id === activeId);
     if (!t || t.estado !== 'en_atencion') return;
@@ -374,31 +408,17 @@
     showToast('Conversación devuelta al bot');
   }
 
+  // ── TOAST ──────────────────────────────────────────────────────────
   function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
     toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
+    setTimeout(() => toast.classList.remove('show'), 2800);
   }
 
-  // Función global para recibir handoffs desde N8N
-  window.receiveHandoff = function(data) {
-    if (tickets.find(t => t.chat_id === data.chat_id)) return;
-    tickets.unshift({
-      chat_id: data.chat_id,
-      nombre_usuario: data.nombre_usuario || 'Usuario',
-      ultimo_mensaje: data.ultimo_mensaje || '',
-      timestamp_handoff: data.timestamp || new Date().toISOString(),
-      estado: 'en_atencion',
-      historial: data.historial || []
-    });
-    filtered = [...tickets];
-    renderList();
-    showToast('Nuevo ticket: ' + (data.nombre_usuario || data.chat_id));
-  };
-
-  filtered = [...tickets];
-  renderList();
+  // ── INIT ───────────────────────────────────────────────────────────
+  pollTickets();
+  setInterval(pollTickets, POLL_INTERVAL_MS);
 </script>
 </body>
 </html>
