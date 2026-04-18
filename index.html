@@ -275,7 +275,7 @@
       const el  = document.createElement('div');
       el.className = 'ticket-item' + (t.chat_id === activeId ? ' active' : '');
       el.onclick   = () => selectTicket(t.chat_id);
-      const dot    = t.estado === 'en_atencion' ? 'active' : 'closed';
+      estado: s.handoff_activo === 'Activo' ? 'en_atencion' : 'cerrado',
       el.innerHTML = `
         <div class="avatar-sm">${initials(t.nombre_usuario)}</div>
         <div class="status-dot ${dot}"></div>
