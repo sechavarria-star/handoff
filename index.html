@@ -181,7 +181,7 @@
 <script>
   const N8N_POLLING_URL   = 'https://giwa-ia.app.n8n.cloud/webhook/handoff-tickets';
   const N8N_RESPONDER_URL = 'https://corsproxy.io/?url=https://giwa-ia.app.n8n.cloud/webhook/handoff-responder';
-  const N8N_RELEASE_URL   = 'https://corsproxy.io/?url=https://giwa-ia.app.n8n.cloud/webhook/handoff-release';
+  const N8N_RELEASE_URL = 'https://api.allorigins.win/raw?url=https://giwa-ia.app.n8n.cloud/webhook/handoff-release';
   const POLL_INTERVAL_MS  = 10000;
 
   const initials = n => n.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
