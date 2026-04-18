@@ -29,7 +29,6 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--bg-tertiary); color: var(--text-primary); height: 100vh; overflow: hidden; }
     .app { display: grid; grid-template-columns: 300px 1fr 300px; grid-template-rows: 56px 1fr; height: 100vh; background: var(--bg-primary); }
 
-    /* TOPBAR */
     .topbar { grid-column: 1 / -1; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg-primary); gap: 14px; }
     .topbar-logo { font-size: 15px; font-weight: 500; letter-spacing: -0.3px; }
     .topbar-logo span { color: var(--blue); }
@@ -45,7 +44,6 @@
     @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2); opacity: 0; } }
     .sync-label { font-size: 11px; color: var(--text-tertiary); }
 
-    /* SIDEBAR */
     .sidebar { border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; background: var(--bg-primary); }
     .sidebar-header { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); }
     .sidebar-title { font-size: 12px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
@@ -64,10 +62,8 @@
     .ticket-preview { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .status-dot { width: 9px; height: 9px; border-radius: 50%; position: absolute; bottom: 13px; left: 39px; border: 2px solid var(--bg-primary); }
     .status-dot.active { background: #1D9E75; }
-    .status-dot.closed { background: #aaa; }
     .ticket-item.active .status-dot { border-color: var(--blue-light); }
 
-    /* CHAT */
     .chat-area { display: flex; flex-direction: column; overflow: hidden; background: var(--bg-secondary); }
     .chat-header { display: flex; align-items: center; gap: 12px; padding: 13px 18px; background: var(--bg-primary); border-bottom: 1px solid var(--border); }
     .chat-header-info { flex: 1; }
@@ -91,7 +87,6 @@
     .btn-send { padding: 0 18px; height: 40px; border-radius: var(--radius-md); background: var(--blue); color: #fff; border: none; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
     .btn-send:hover { background: var(--blue-dark); }
 
-    /* RIGHT PANEL */
     .right-panel { border-left: 1px solid var(--border); display: flex; flex-direction: column; padding: 18px; gap: 16px; overflow-y: auto; background: var(--bg-primary); }
     .panel-section { display: flex; flex-direction: column; gap: 8px; }
     .panel-label { font-size: 11px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -101,7 +96,6 @@
     .info-val.normal { font-family: 'DM Sans', sans-serif; }
     .status-badge { display: inline-flex; align-items: center; font-size: 12px; padding: 4px 11px; border-radius: var(--radius-md); font-weight: 500; width: fit-content; }
     .status-badge.en-atencion { background: var(--blue-light); color: var(--blue); }
-    .status-badge.bot { background: var(--green-light); color: var(--green); }
     .divider { height: 1px; background: var(--border); flex-shrink: 0; }
     .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .metric-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; }
@@ -111,14 +105,11 @@
     .h-rol { color: var(--text-tertiary); font-family: 'DM Mono', monospace; font-size: 11px; }
     .btn-return { width: 100%; padding: 11px; border-radius: var(--radius-md); background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: background 0.15s; margin-top: auto; }
     .btn-return:hover { background: var(--green-border); }
-    .btn-return:disabled { opacity: 0.45; cursor: not-allowed; }
 
-    /* EMPTY */
     .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 13px; gap: 10px; }
     .empty-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
-    /* TOAST */
-    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--blue); color: #fff; font-size: 13px; font-family: 'DM Sans', sans-serif; padding: 10px 18px; border-radius: var(--radius-md); opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--blue); color: #fff; font-size: 13px; font-family: 'DM Sans', sans-serif; padding: 10px 18px; border-radius: var(--radius-md); opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; }
     .toast.show { opacity: 1; }
 
     ::-webkit-scrollbar { width: 4px; }
@@ -129,12 +120,10 @@
 <body>
 
 <div class="app">
-
-  <!-- TOPBAR -->
   <div class="topbar">
     <div>
       <div class="topbar-logo">GIWA <span>Handoff</span></div>
-      <div style="font-size:11px;color:var(--text-tertiary);margin-top:1px;">Panel de atención humana</div>
+      <div class="topbar-sub">Panel de atención humana</div>
     </div>
     <div class="topbar-divider"></div>
     <div class="pulse"></div>
@@ -147,7 +136,6 @@
     <div class="avatar-sm">SE</div>
   </div>
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">Tickets activos</div>
@@ -158,7 +146,6 @@
     <div class="ticket-list" id="ticket-list"></div>
   </div>
 
-  <!-- CHAT -->
   <div class="chat-area">
     <div class="empty-state" id="empty-state">
       <div class="empty-icon">💬</div>
@@ -181,14 +168,12 @@
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div class="right-panel" id="right-panel">
     <div class="empty-state" style="margin-top:40px;">
       <div class="empty-icon">👤</div>
       <span>Sin ticket seleccionado</span>
     </div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -196,7 +181,7 @@
 <script>
   const N8N_POLLING_URL   = 'https://giwa-ia.app.n8n.cloud/webhook/handoff-tickets';
   const N8N_RESPONDER_URL = 'https://corsproxy.io/?url=https://giwa-ia.app.n8n.cloud/webhook/handoff-responder';
-  const N8N_RELEASE_URL = 'https://corsproxy.io/?url=https://giwa-ia.app.n8n.cloud/webhook/handoff-release';
+  const N8N_RELEASE_URL   = 'https://corsproxy.io/?url=https://giwa-ia.app.n8n.cloud/webhook/handoff-release';
   const POLL_INTERVAL_MS  = 10000;
 
   const initials = n => n.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -208,43 +193,52 @@
   let activeId = null;
   let searchQ  = '';
 
-  // ── POLLING ────────────────────────────────────────────────────────
   async function pollTickets() {
     try {
       const res  = await fetch(N8N_POLLING_URL);
       const data = await res.json();
       const incoming = Array.isArray(data.tickets) ? data.tickets : [];
 
-      // detectar tickets nuevos para notificar
+      // notificar tickets nuevos
       incoming.forEach(t => {
         const exists = tickets.find(x => x.chat_id === t.chat_id);
-        if (!exists && t.estado === 'en_atencion') {
-          showToast('Nuevo ticket: ' + t.nombre_usuario);
-        }
+        if (!exists) showToast('Nuevo ticket: ' + t.nombre_usuario);
       });
 
-      // actualizar lista conservando mensajes del agente enviados localmente
-      tickets = incoming.map(incoming => {
-        const local = tickets.find(x => x.chat_id === incoming.chat_id);
+      // reemplazar lista completa — los que no vienen ya fueron devueltos al bot
+      const prevIds = tickets.map(t => t.chat_id);
+      const newIds  = incoming.map(t => t.chat_id);
+
+      // si el ticket activo ya no está en la lista → cerrar panel
+      if (activeId && !newIds.includes(activeId)) {
+        activeId = null;
+        document.getElementById('empty-state').style.display = 'flex';
+        document.getElementById('chat-active').style.display = 'none';
+        document.getElementById('right-panel').innerHTML = `
+          <div class="empty-state" style="margin-top:40px;">
+            <div class="empty-icon">👤</div>
+            <span>Sin ticket seleccionado</span>
+          </div>`;
+        showToast('Ticket cerrado — devuelto al bot');
+      }
+
+      // conservar mensajes de agente locales no guardados aún
+      tickets = incoming.map(t => {
+        const local = tickets.find(x => x.chat_id === t.chat_id);
         if (local) {
-          // agregar mensajes de agente locales que no están en el servidor aún
-          const serverIds = new Set(incoming.historial.map(m => m.timestamp));
-          const localAgent = local.historial.filter(m => m.rol === 'agente' && !serverIds.has(m.timestamp));
-          incoming.historial = [...incoming.historial, ...localAgent]
-            .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+          const serverTs = new Set(t.historial.map(m => m.timestamp));
+          const localAgent = local.historial.filter(m => m.rol === 'agente' && !serverTs.has(m.timestamp));
+          t.historial = [...t.historial, ...localAgent].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
-        return incoming;
+        return t;
       });
 
       applyFilter();
 
-      // refrescar vista activa si está abierta
+      // refrescar vista activa
       if (activeId) {
         const t = tickets.find(t => t.chat_id === activeId);
-        if (t) {
-          renderMessages(t);
-          renderRightPanel(t);
-        }
+        if (t) { renderMessages(t); renderRightPanel(t); }
       }
 
       document.getElementById('sync-label').textContent = 'Actualizado ' + fmt(new Date());
@@ -263,7 +257,6 @@
 
   function filterTickets(q) { searchQ = q; applyFilter(); }
 
-  // ── RENDER LIST ────────────────────────────────────────────────────
   function renderList() {
     const list = document.getElementById('ticket-list');
     list.innerHTML = '';
@@ -272,13 +265,12 @@
       return;
     }
     filtered.forEach(t => {
-      const el  = document.createElement('div');
+      const el = document.createElement('div');
       el.className = 'ticket-item' + (t.chat_id === activeId ? ' active' : '');
-      el.onclick   = () => selectTicket(t.chat_id);
-      estado: s.handoff_activo === 'Activo' ? 'en_atencion' : 'cerrado',
+      el.onclick = () => selectTicket(t.chat_id);
       el.innerHTML = `
         <div class="avatar-sm">${initials(t.nombre_usuario)}</div>
-        <div class="status-dot ${dot}"></div>
+        <div class="status-dot active"></div>
         <div class="ticket-info">
           <div class="ticket-header">
             <span class="ticket-name">${t.nombre_usuario}</span>
@@ -290,7 +282,6 @@
     });
   }
 
-  // ── SELECT TICKET ──────────────────────────────────────────────────
   function selectTicket(id) {
     activeId = id;
     renderList();
@@ -305,13 +296,12 @@
     renderRightPanel(t);
   }
 
-  // ── RENDER MESSAGES ────────────────────────────────────────────────
   function renderMessages(t) {
     const area = document.getElementById('chat-messages');
-    const scrollBottom = area.scrollHeight - area.scrollTop === area.clientHeight;
+    const atBottom = area.scrollHeight - area.scrollTop <= area.clientHeight + 50;
     area.innerHTML = '';
     const sys = document.createElement('div');
-    sys.className   = 'system-msg';
+    sys.className = 'system-msg';
     sys.textContent = '— handoff iniciado · ' + fmt(t.timestamp_handoff) + ' —';
     area.appendChild(sys);
     t.historial.forEach(m => {
@@ -319,11 +309,11 @@
       const isBot   = m.rol === 'bot';
       const wrap    = document.createElement('div');
       wrap.className = 'msg ' + (isAgent ? 'from-agent' : 'from-user');
-      const label   = isAgent ? 'Agente' : isBot ? 'Bot' : t.nombre_usuario;
-      const ini     = isAgent ? 'AG' : isBot ? 'B' : initials(t.nombre_usuario);
-      const av      = isAgent ? 'background:#B5D4F4;color:#0C447C;'
-                    : isBot   ? 'background:#C0DD97;color:#27500A;'
-                    :           'background:#F4C0D1;color:#72243E;';
+      const label = isAgent ? 'Agente' : isBot ? 'Bot' : t.nombre_usuario;
+      const ini   = isAgent ? 'AG' : isBot ? 'B' : initials(t.nombre_usuario);
+      const av    = isAgent ? 'background:#B5D4F4;color:#0C447C;'
+                  : isBot   ? 'background:#C0DD97;color:#27500A;'
+                  :           'background:#F4C0D1;color:#72243E;';
       wrap.innerHTML = `
         <div class="avatar-sm" style="${av}">${ini}</div>
         <div>
@@ -332,13 +322,11 @@
         </div>`;
       area.appendChild(wrap);
     });
-    if (scrollBottom) area.scrollTop = area.scrollHeight;
+    if (atBottom) area.scrollTop = area.scrollHeight;
   }
 
-  // ── RENDER RIGHT PANEL ─────────────────────────────────────────────
   function renderRightPanel(t) {
-    const panel    = document.getElementById('right-panel');
-    const isActive = t.estado === 'en_atencion';
+    const panel = document.getElementById('right-panel');
     panel.innerHTML = `
       <div class="panel-section">
         <div class="panel-label">Usuario</div>
@@ -349,7 +337,7 @@
       <div class="divider"></div>
       <div class="panel-section">
         <div class="panel-label">Estado</div>
-        <span class="status-badge ${isActive ? 'en-atencion' : 'bot'}">${isActive ? 'En atención' : 'Devuelto al bot'}</span>
+        <span class="status-badge en-atencion">En atención</span>
         <div class="metric-grid">
           <div class="metric-card"><div class="metric-label">Tiempo</div><div class="metric-value">${elapsed(t.timestamp_handoff)}</div></div>
           <div class="metric-card"><div class="metric-label">Mensajes</div><div class="metric-value">${t.historial.length}</div></div>
@@ -363,12 +351,9 @@
         </div>
       </div>
       <div class="divider"></div>
-      <button class="btn-return" onclick="returnToBot()" ${!isActive ? 'disabled' : ''}>
-        ${isActive ? '↩ Devolver al Bot' : 'Ya devuelto al bot'}
-      </button>`;
+      <button class="btn-return" onclick="returnToBot()">↩ Devolver al Bot</button>`;
   }
 
-  // ── SEND MESSAGE ───────────────────────────────────────────────────
   function sendMessage() {
     const input = document.getElementById('msg-input');
     const texto = input.value.trim();
@@ -376,11 +361,9 @@
     input.value = '';
     const t = tickets.find(t => t.chat_id === activeId);
     if (!t) return;
-    const msg = { rol: 'agente', mensaje: texto, timestamp: new Date().toISOString() };
-    t.historial.push(msg);
+    t.historial.push({ rol: 'agente', mensaje: texto, timestamp: new Date().toISOString() });
     t.ultimo_mensaje = texto;
     renderMessages(t);
-    renderList();
     fetch(N8N_RESPONDER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -393,22 +376,19 @@
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   }
 
-  // ── RETURN TO BOT ──────────────────────────────────────────────────
   function returnToBot() {
+    if (!activeId) return;
     const t = tickets.find(t => t.chat_id === activeId);
-    if (!t || t.estado !== 'en_atencion') return;
+    if (!t) return;
     fetch(N8N_RELEASE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: activeId, nombre_usuario: t.nombre_usuario })
     }).catch(() => {});
-    t.estado = 'cerrado';
-    renderRightPanel(t);
-    renderList();
-    showToast('Conversación devuelta al bot');
+    showToast('Devolviendo al bot...');
+    // el polling va a limpiar el ticket en el próximo ciclo
   }
 
-  // ── TOAST ──────────────────────────────────────────────────────────
   function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
@@ -416,7 +396,8 @@
     setTimeout(() => toast.classList.remove('show'), 2800);
   }
 
-  // ── INIT ───────────────────────────────────────────────────────────
+  filtered = [...tickets];
+  renderList();
   pollTickets();
   setInterval(pollTickets, POLL_INTERVAL_MS);
 </script>
